@@ -54,9 +54,9 @@ def main():
         print_scheduler_queue()
         evento = scheduler_get_new_event();
         print_new_event(evento)
-        if (evento == TipoEvento.CHEGADA):
+        if (evento["event_type"] == TipoEvento.CHEGADA):
             chegada(evento);
-        elif (evento == TipoEvento.SAIDA):
+        elif (evento["event_type"] == TipoEvento.SAIDA):
             saida(evento);
         print_state("AFTER")
         print()
@@ -65,15 +65,20 @@ def main():
     # print_distribution()
 
 def initialize_queue_state():
+    global queue_state
     queue_state = (0,) * queue_capacity
+    scheduler_queue.append(new_event(TipoEvento.CHEGADA))
 
 def fila_in():
+    global queue_status
     queue_status += 1
 
 def fila_out():
+    global queue_status
     queue_status -= 1
 
 def fila_loss():
+    global queue_status, queue_lost
     queue_status -= 1
     queue_lost += 1
 
@@ -109,34 +114,34 @@ def random_number() -> float:
 
 def scheduler_get_new_event() -> Event:
     scheduled: Event = None
-    for i in range(0, len(scheduler_queue)):
+    scheduled_i: int = -1
+    for i in range(len(scheduler_queue)):
         event = scheduler_queue[i]
         if scheduled is None or event["time_to_ocurr"] < scheduled["time_to_ocurr"]:
             scheduled = event
-        scueduler_queue.pop(i)
-    if scheduled is None:
-        scheduled = new_event(TipoEvento.CHEGADA)
+            scheduled_i = i
     return scheduled
 
 def scheduler_add(event_type: TipoEvento):
     scheduler_queue.append(new_event(event_type))
 
 def accTime(event: Event):
+    global global_time
     global_time += event["time_to_ocurr"]
 
 def chegada(evento):
     accTime(evento)
     if queue_status < queue_capacity:
-        fila_in(evento)
+        fila_in()
         if queue_status <= queue_servers:
             scheduler_add(TipoEvento.SAIDA)
     else:
-        fila_loss(evento)
+        fila_loss()
     scheduler_add(TipoEvento.CHEGADA)
 
 def saida(evento):
     accTime(evento)
-    fila_out(evento)
+    fila_out()
     if queue_status >= queue_servers:
         scheduler_add(TipoEvento.SAIDA)
 
