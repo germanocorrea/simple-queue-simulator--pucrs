@@ -43,7 +43,7 @@ def print_new_event(event: Event):
     if event is None:
         print("  new_event = None")
         return
-    print(f"  new_event type={event['event_type']} random={event['random_generated']:.4f} time_to_ocurr={event['time_to_ocurr']:.4f}")
+    print(f"  scheduled_event type={event['event_type']} random={event['random_generated']:.4f} time_to_ocurr={event['time_to_ocurr']:.4f}")
 
 
 def main():
