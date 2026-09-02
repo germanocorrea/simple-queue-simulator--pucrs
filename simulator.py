@@ -96,10 +96,11 @@ def get_interval_from_type(event_type: TipoEvento) -> TInterval:
     return exit_interval
 
 def random_number() -> float:
+    global previous_random
     M = pow(2, 27)
     a = 545643
     c = 76785897
-    previous_random = ((a * previous) + c) % M
+    previous_random = ((a * previous_random) + c) % M
     return previous_random/M;
 
 # def print_distribution(k, times):
@@ -113,6 +114,8 @@ def scheduler_get_new_event() -> Event:
         if scheduled is None or event["time_to_ocurr"] < scheduled["time_to_ocurr"]:
             scheduled = event
         scueduler_queue.pop(i)
+    if scheduled is None:
+        scheduled = new_event(TipoEvento.CHEGADA)
     return scheduled
 
 def scheduler_add(event_type: TipoEvento):
