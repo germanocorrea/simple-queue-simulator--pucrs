@@ -22,6 +22,8 @@ global_time: float = 0
 previous_random: float = 42 # seed
 max_randoms: int = 100000
 
+state_time: list[float] = []
+
 queue_capacity: int = 0
 queue_servers: int = 0
 queue_state: TQueueState
@@ -32,6 +34,7 @@ scheduler_queue: list[Event] = []
 
 arrival_interval: TInterval = (0, 1)
 exit_inteval: TInterval = (0, 1)
+initial_time: float = 1
 
 def print_state(label: str = ""):
     if not debug:
@@ -58,6 +61,19 @@ def print_new_event(event: Event):
         return
     print(f"  scheduled_event type={event['event_type']} random={event['random_generated']:.4f} time_to_ocurr={event['time_to_ocurr']:.4f}")
 
+def print_final_report():
+    total_time = sum(state_time)
+    print("\n========== FINAL REPORT ==========")
+    print(f"Global simulation time: {global_time:.4f}")
+    print(f"Total clients lost: {queue_lost}")
+    print("\nQueue state distribution:")
+    print(f"  {'State':<6} {'Accum. time':<18} {'Probability':<12} {'%':<10}")
+    for i, t in enumerate(state_time):
+        prob = (t / total_time) if total_time > 0 else 0
+        label = f"{i}*" if i == queue_capacity else str(i)
+        print(f"  {label:<6} {t:<18.4f} {prob:<12.6f} {prob*100:<10.2f}")
+    print("=" * 32)
+
 
 def main():
     initialize_queue_state()
@@ -75,15 +91,16 @@ def main():
         print()
         count -= 1
 
-    # print_distribution()
+    print_final_report()
 
 def initialize_queue_state():
-    global queue_state
+    global queue_state, state_time
     queue_state = (0,) * queue_capacity
+    state_time = [0.0] * (queue_capacity + 1)
     scheduler_queue.append({
         "event_type": TipoEvento.CHEGADA,
         "random_generated": 0,
-        "time_to_ocurr": 1,
+        "time_to_ocurr": initial_time,
     })
 
 def fila_in():
@@ -137,6 +154,10 @@ def scheduler_get_new_event() -> Event:
         if scheduled is None or event["time_to_ocurr"] < scheduled["time_to_ocurr"]:
             scheduled = event
             scheduled_i = i
+    if scheduled is not None:
+        scheduler_queue.pop(scheduled_i)
+    else:
+        scheduled = new_event(TipoEvento.CHEGADA)
     return scheduled
 
 def scheduler_add(event_type: TipoEvento):
@@ -144,7 +165,10 @@ def scheduler_add(event_type: TipoEvento):
 
 def accTime(event: Event):
     global global_time
-    global_time += event["time_to_ocurr"]
+    dt = event["time_to_ocurr"] - global_time
+    state_index = min(queue_status, queue_capacity)
+    state_time[state_index] += max(dt, 0)
+    global_time = event["time_to_ocurr"]
 
 def chegada(evento):
     accTime(evento)
@@ -174,7 +198,9 @@ if __name__ == "__main__":
         queue_capacity = int(args[5])
         if len(args) > 6:
             max_randoms = int(args[6])
+        if len(args) > 7:
+            initial_time = float(args[7])
     except (IndexError, ValueError):
-        print("\n\nUsage: ./simulator.py [arrival_initial_value] [arrival_final_value] [exit_initial_value] [exit_final_value] [servers_number] [queue_capacity] [max_randoms] [--debug]")
+        print("\n\nUsage: ./simulator.py [arrival_initial_value] [arrival_final_value] [exit_initial_value] [exit_final_value] [servers_number] [queue_capacity] [max_randoms] [initial_time] [--debug]")
         sys.exit(1)
     main()
