@@ -6,12 +6,12 @@ from typing import TypeAlias, TypedDict, Tuple
 debug: bool = False
 
 
-class TipoEvento(Enum):
-    CHEGADA = 0
-    SAIDA = 1
+class EventType(Enum):
+    ARRIVAL = 0
+    EXIT = 1
 
 class Event(TypedDict):
-    event_type: TipoEvento
+    event_type: EventType
     random_generated: float
     time_to_ocurr: float
 
@@ -81,12 +81,12 @@ def main():
     while (count > 0):
         print_state("BEFORE")
         print_scheduler_queue()
-        evento = scheduler_get_new_event();
-        print_new_event(evento)
-        if (evento["event_type"] == TipoEvento.CHEGADA):
-            chegada(evento);
-        elif (evento["event_type"] == TipoEvento.SAIDA):
-            saida(evento);
+        event = scheduler_get_new_event();
+        print_new_event(event)
+        if (event["event_type"] == EventType.ARRIVAL):
+            ARRIVAL(event);
+        elif (event["event_type"] == EventType.EXIT):
+            EXIT(event);
         print_state("AFTER")
         print()
         count -= 1
@@ -98,25 +98,25 @@ def initialize_queue_state():
     queue_state = (0,) * queue_capacity
     state_time = [0.0] * (queue_capacity + 1)
     scheduler_queue.append({
-        "event_type": TipoEvento.CHEGADA,
+        "event_type": EventType.ARRIVAL,
         "random_generated": 0,
         "time_to_ocurr": initial_time,
     })
 
-def fila_in():
+def queue_in():
     global queue_status
     queue_status += 1
 
-def fila_out():
+def queue_out():
     global queue_status
     queue_status -= 1
 
-def fila_loss():
+def queue_loss():
     global queue_status, queue_lost
     queue_status -= 1
     queue_lost += 1
 
-def new_event(event_type: TipoEvento) -> Event:
+def new_event(event_type: EventType) -> Event:
     random_generated = get_random_for_type(event_type)
     return {
         "event_type": event_type,
@@ -124,13 +124,13 @@ def new_event(event_type: TipoEvento) -> Event:
         "time_to_ocurr": global_time + random_generated,
     }
 
-def get_random_for_type(event_type: TipoEvento) -> float:
+def get_random_for_type(event_type: EventType) -> float:
     random = random_number()
     interval = get_interval_from_type(event_type)
     return interval[0] + ((interval[1] - interval[0]) * random)
 
-def get_interval_from_type(event_type: TipoEvento) -> TInterval:
-    if event_type == TipoEvento.CHEGADA:
+def get_interval_from_type(event_type: EventType) -> TInterval:
+    if event_type == EventType.ARRIVAL:
         return arrival_interval
     return exit_interval
 
@@ -153,10 +153,10 @@ def scheduler_get_new_event() -> Event:
     if scheduled is not None:
         scheduler_queue.pop(scheduled_i)
     else:
-        scheduled = new_event(TipoEvento.CHEGADA)
+        scheduled = new_event(EventType.ARRIVAL)
     return scheduled
 
-def scheduler_add(event_type: TipoEvento):
+def scheduler_add(event_type: EventType):
     scheduler_queue.append(new_event(event_type))
 
 def accTime(event: Event):
@@ -166,21 +166,21 @@ def accTime(event: Event):
     state_time[state_index] += max(dt, 0)
     global_time = event["time_to_ocurr"]
 
-def chegada(evento):
-    accTime(evento)
+def ARRIVAL(event):
+    accTime(event)
     if queue_status < queue_capacity:
-        fila_in()
+        queue_in()
         if queue_status <= queue_servers:
-            scheduler_add(TipoEvento.SAIDA)
+            scheduler_add(EventType.EXIT)
     else:
-        fila_loss()
-    scheduler_add(TipoEvento.CHEGADA)
+        queue_loss()
+    scheduler_add(EventType.ARRIVAL)
 
-def saida(evento):
-    accTime(evento)
-    fila_out()
+def EXIT(event):
+    accTime(event)
+    queue_out()
     if queue_status >= queue_servers:
-        scheduler_add(TipoEvento.SAIDA)
+        scheduler_add(EventType.EXIT)
 
 if __name__ == "__main__":
     args = sys.argv[1:]
