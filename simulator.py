@@ -3,6 +3,8 @@ import sys
 from enum import Enum
 from typing import TypeAlias, TypedDict, Tuple
 
+debug: bool = False
+
 
 class TipoEvento(Enum):
     CHEGADA = 0
@@ -32,14 +34,25 @@ arrival_interval: TInterval = (0, 1)
 exit_inteval: TInterval = (0, 1)
 
 def print_state(label: str = ""):
+    if not debug:
+        return
     prefix = f"[{label}] " if label else ""
     qs = globals().get("queue_state", ())
-    print(f"{prefix}global_time={global_time:.4f} | queue_status={queue_status} | queue_lost={queue_lost} | queue_state={list(qs)} | scheduler_queue={scheduler_queue}")
+    print(f"{prefix}global_time={global_time:.4f} | queue_status={queue_status} | queue_lost={queue_lost} | queue_state={list(qs)}")
+    print_scheduler_queue(prefix)
 
-def print_scheduler_queue():
-    print(f"  scheduler_queue (before pop) = {scheduler_queue}")
+def print_scheduler_queue(indent: str = ""):
+    if not debug:
+        return
+    print(f"{indent}scheduler_queue ({len(scheduler_queue)} items):")
+    for i, event in enumerate(scheduler_queue):
+        print(f"{indent}  [{i}] type={event['event_type']} random={event['random_generated']:.4f} time_to_ocurr={event['time_to_ocurr']:.4f}")
+    if not scheduler_queue:
+        print(f"{indent}  (empty)")
 
 def print_new_event(event: Event):
+    if not debug:
+        return
     if event is None:
         print("  new_event = None")
         return
@@ -150,14 +163,18 @@ def saida(evento):
         scheduler_add(TipoEvento.SAIDA)
 
 if __name__ == "__main__":
+    args = sys.argv[1:]
+    if "--debug" in args:
+        debug = True
+        args.remove("--debug")
     try:
-        arrival_interval = (float(sys.argv[1]), float(sys.argv[2]))
-        exit_interval = (float(sys.argv[3]), float(sys.argv[4]))
-        queue_servers = int(sys.argv[5])
-        queue_capacity = int(sys.argv[6])
-        if len(sys.argv) > 7:
-            max_randoms = int(sys.argv[7])
-    except IndexError:
-        print("\n\nUsage: ./simulator.py [arrival_initial_value] [arrival_final_value] [exit_initial_value] [exit_final_value] [servers_number] [queue_capacity]")
+        arrival_interval = (float(args[0]), float(args[1]))
+        exit_interval = (float(args[2]), float(args[3]))
+        queue_servers = int(args[4])
+        queue_capacity = int(args[5])
+        if len(args) > 6:
+            max_randoms = int(args[6])
+    except (IndexError, ValueError):
+        print("\n\nUsage: ./simulator.py [arrival_initial_value] [arrival_final_value] [exit_initial_value] [exit_final_value] [servers_number] [queue_capacity] [max_randoms] [--debug]")
         sys.exit(1)
     main()
