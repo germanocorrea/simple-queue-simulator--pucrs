@@ -18,6 +18,7 @@ type TQueueState = tuple[int, ...] # tamanho da dupla reforçado em runetime dep
 
 global_time: float = 0
 previous_random: float = 42 # seed
+max_randoms: int = 100000
 
 queue_capacity: int = 0
 queue_servers: int = 0
@@ -30,15 +31,36 @@ scheduler_queue: list[Event] = []
 arrival_interval: TInterval = (0, 1)
 exit_inteval: TInterval = (0, 1)
 
+def print_state(label: str = ""):
+    prefix = f"[{label}] " if label else ""
+    qs = globals().get("queue_state", ())
+    print(f"{prefix}global_time={global_time:.4f} | queue_status={queue_status} | queue_lost={queue_lost} | queue_state={list(qs)} | scheduler_queue={scheduler_queue}")
+
+def print_scheduler_queue():
+    print(f"  scheduler_queue (before pop) = {scheduler_queue}")
+
+def print_new_event(event: Event):
+    if event is None:
+        print("  new_event = None")
+        return
+    print(f"  new_event type={event['event_type']} random={event['random_generated']:.4f} time_to_ocurr={event['time_to_ocurr']:.4f}")
+
+
 def main():
     initialize_queue_state()
-    count = 100000
+    count = max_randoms
     while (count > 0):
+        print_state("BEFORE")
+        print_scheduler_queue()
         evento = scheduler_get_new_event();
+        print_new_event(evento)
         if (evento == TipoEvento.CHEGADA):
             chegada(evento);
         elif (evento == TipoEvento.SAIDA):
             saida(evento);
+        print_state("AFTER")
+        print()
+        count -= 1
 
     # print_distribution()
 
@@ -121,6 +143,8 @@ if __name__ == "__main__":
         exit_interval = (float(sys.argv[3]), float(sys.argv[4]))
         queue_servers = int(sys.argv[5])
         queue_capacity = int(sys.argv[6])
+        if len(sys.argv) > 7:
+            max_randoms = int(sys.argv[7])
     except IndexError:
         print("\n\nUsage: ./simulator.py [arrival_initial_value] [arrival_final_value] [exit_initial_value] [exit_final_value] [servers_number] [queue_capacity]")
         sys.exit(1)
