@@ -67,7 +67,11 @@ def main():
 def initialize_queue_state():
     global queue_state
     queue_state = (0,) * queue_capacity
-    scheduler_queue.append(new_event(TipoEvento.CHEGADA))
+    scheduler_queue.append({
+        "event_type": TipoEvento.CHEGADA,
+        "random_generated": 0,
+        "time_to_ocurr": 1,
+    })
 
 def fila_in():
     global queue_status
