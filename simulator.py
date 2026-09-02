@@ -112,8 +112,7 @@ def queue_out():
     queue_status -= 1
 
 def queue_loss():
-    global queue_status, queue_lost
-    queue_status -= 1
+    global queue_lost
     queue_lost += 1
 
 def new_event(event_type: EventType) -> Event:
