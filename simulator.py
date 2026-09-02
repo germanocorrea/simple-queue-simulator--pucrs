@@ -142,10 +142,6 @@ def random_number() -> float:
     previous_random = ((a * previous_random) + c) % M
     return previous_random/M;
 
-# def print_distribution(k, times):
-#     for i in range(0,k+1):
-#         print(str(i) + ": " + str(times[i]) + " (" + str(times[i]/global_time) + "\%)")
-
 def scheduler_get_new_event() -> Event:
     scheduled: Event = None
     scheduled_i: int = -1
