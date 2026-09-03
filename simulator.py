@@ -88,7 +88,8 @@ def main():
         elif (event["event_type"] == EventType.EXIT):
             EXIT(event);
         print_state("AFTER")
-        print()
+        if debug:
+            print()
         count -= 1
 
     print_final_report()
