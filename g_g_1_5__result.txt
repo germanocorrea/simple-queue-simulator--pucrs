@@ -1,4 +1,12 @@
 
+======== INPUT INFORMATION ========
+Arrival interval: [3.0000, 5.0000]
+Exit interval: [4.0000, 5.0000]
+Servers: 1
+Queue capacity: 5
+Max randoms: 100000
+Initial time: 3.0000
+
 ========== FINAL REPORT ==========
 Global simulation time: 211770.1916
 Total clients lost: 5865

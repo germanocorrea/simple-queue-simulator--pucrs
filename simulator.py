@@ -63,6 +63,13 @@ def print_new_event(event: Event):
 
 def print_final_report():
     total_time = sum(state_time)
+    print("\n======== INPUT INFORMATION ========")
+    print(f"Arrival interval: [{arrival_interval[0]:.4f}, {arrival_interval[1]:.4f}]")
+    print(f"Exit interval: [{exit_interval[0]:.4f}, {exit_interval[1]:.4f}]")
+    print(f"Servers: {queue_servers}")
+    print(f"Queue capacity: {queue_capacity}")
+    print(f"Max randoms: {max_randoms}")
+    print(f"Initial time: {initial_time:.4f}")
     print("\n========== FINAL REPORT ==========")
     print(f"Global simulation time: {global_time:.4f}")
     print(f"Total clients lost: {queue_lost}")
