@@ -1,0 +1,21 @@
+# Duas filas em tandem (o modelo do módulo anterior).
+# Q1 -> Q2 com probabilidade 1: roteamento determinístico, não consome aleatório.
+simulation:
+  max_randoms: 100000
+  seed: 42
+
+queues:
+  Q1:
+    servers: 2
+    capacity: 3
+    arrival: [1.0, 4.0]
+    first_arrival: 1.5
+    service: [3.0, 4.0]
+    routing:
+      Q2: 1.0
+
+  Q2:
+    servers: 1
+    capacity: 5
+    service: [2.0, 3.0]
+    # sem 'routing': 100% vai para o exterior
