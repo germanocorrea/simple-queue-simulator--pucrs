@@ -1,0 +1,49 @@
+# Rede de incidentes de TI (abr-mai/2016). Tempo em minutos úteis (8h-18h, dias úteis).
+# Gerado pelo notebook: base.yml com só a capacidade extra em OUTROS
+simulation:
+  max_randoms: 1000000
+  seed: 42
+
+queues:
+  N1:                 # G/G/358 (capacidade infinita)
+    servers: 358
+    arrival: [0, 5.67]
+    service: [0, 493.25]
+    routing:
+      N1: 0.0067
+      N2a: 0.0485
+      N2b: 0.0653
+      OUTROS: 0.1936
+      # o restante vai para o exterior (incidente resolvido)
+
+  N2a:                 # G/G/151 (capacidade infinita)
+    servers: 151
+    arrival: [0, 48.2]
+    service: [0, 2721.23]
+    routing:
+      N1: 0.3371
+      N2b: 0.001
+      OUTROS: 0.4852
+      # o restante vai para o exterior (incidente resolvido)
+
+  N2b:                 # G/G/88 (capacidade infinita)
+    servers: 88
+    arrival: [0, 199.15]
+    service: [0, 1220.13]
+    routing:
+      N1: 0.2743
+      N2a: 0.0009
+      N2b: 0.0184
+      OUTROS: 0.0386
+      # o restante vai para o exterior (incidente resolvido)
+
+  OUTROS:                 # G/G/1300 (capacidade infinita)
+    servers: 1300     # MELHORIA: era 1212
+    arrival: [0, 7.83]
+    service: [0, 6179.97]
+    routing:
+      N1: 0.1649
+      N2a: 0.0456
+      N2b: 0.0176
+      OUTROS: 0.008
+      # o restante vai para o exterior (incidente resolvido)
