@@ -1,5 +1,7 @@
 # Rede de incidentes de TI (abr-mai/2016). Tempo em minutos úteis (8h-18h, dias úteis).
-# Gerado pelo notebook a partir de resultados/parametros.json
+# Modelo melhorado: cópia do base.yml com duas alterações (marcadas com MELHORIA):
+#   1. N1.routing.OUTROS: 0.1936 -> 0.10 (triagem melhor no N1; o restante passa a ser resolvido no N1)
+#   2. OUTROS.servers: 1212 -> 1300 (mais capacidade de atendimento simultâneo no gargalo)
 simulation:
   max_randoms: 1000000
   seed: 42
@@ -13,7 +15,7 @@ queues:
       N1: 0.0067
       N2a: 0.0485
       N2b: 0.0653
-      OUTROS: 0.1936
+      OUTROS: 0.10    # MELHORIA: era 0.1936
       # o restante vai para o exterior (incidente resolvido)
 
   N2a:                 # G/G/151 (capacidade infinita)
@@ -37,8 +39,8 @@ queues:
       OUTROS: 0.0386
       # o restante vai para o exterior (incidente resolvido)
 
-  OUTROS:                 # G/G/1212 (capacidade infinita)
-    servers: 1212
+  OUTROS:                 # G/G/1300 (capacidade infinita)
+    servers: 1300     # MELHORIA: era 1212
     arrival: [0, 7.83]
     service: [0, 6179.97]
     routing:
