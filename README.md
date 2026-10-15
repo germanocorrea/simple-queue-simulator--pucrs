@@ -1,6 +1,6 @@
 # Rede de filas: atendimento de incidentes de TI
 
-Trabalho T2 de Simulação e Métodos Analíticos (PUCRS). Modela o atendimento de chamados de TI como uma rede de filas com retorno, a partir de um log real do ServiceNow (Incident Management Process Enriched Event Log, UCI), simula a rede e compara o modelo atual com um modelo melhorado.
+Trabalho T2 de Simulação e Métodos Analíticos (PUCRS). Modela o atendimento de chamados de TI como uma rede de filas com retorno, a partir de um log real do ServiceNow ([Incident Management Process Enriched Event Log](https://archive.ics.uci.edu/dataset/498/incident+management+process+enriched+event+log), UCI), simula a rede e compara o modelo atual com um modelo melhorado.
 
 ## Modelo
 
