@@ -1,0 +1,78 @@
+{
+  "N1": {
+    "chegada": [
+      0,
+      5.67
+    ],
+    "atendimento": [
+      0,
+      493.25
+    ],
+    "servidores": 358,
+    "mu_por_hora": 0.2433,
+    "rho": 0.318,
+    "roteamento": {
+      "N1": 0.0067,
+      "N2a": 0.0485,
+      "N2b": 0.0653,
+      "OUTROS": 0.1936
+    }
+  },
+  "N2a": {
+    "chegada": [
+      0,
+      48.2
+    ],
+    "atendimento": [
+      0,
+      2721.23
+    ],
+    "servidores": 151,
+    "mu_por_hora": 0.0441,
+    "rho": 0.741,
+    "roteamento": {
+      "N1": 0.3371,
+      "N2a": 0.0,
+      "N2b": 0.001,
+      "OUTROS": 0.4852
+    }
+  },
+  "N2b": {
+    "chegada": [
+      0,
+      199.15
+    ],
+    "atendimento": [
+      0,
+      1220.13
+    ],
+    "servidores": 88,
+    "mu_por_hora": 0.0984,
+    "rho": 0.338,
+    "roteamento": {
+      "N1": 0.2743,
+      "N2a": 0.0009,
+      "N2b": 0.0184,
+      "OUTROS": 0.0386
+    }
+  },
+  "OUTROS": {
+    "chegada": [
+      0,
+      7.83
+    ],
+    "atendimento": [
+      0,
+      6179.97
+    ],
+    "servidores": 1212,
+    "mu_por_hora": 0.0194,
+    "rho": 0.996,
+    "roteamento": {
+      "N1": 0.1649,
+      "N2a": 0.0456,
+      "N2b": 0.0176,
+      "OUTROS": 0.008
+    }
+  }
+}
